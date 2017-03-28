@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<a style="position: absolute; right:20px;" href="index.html">Back</a>
+<p style="font-size:20px; font-weight: 600;">y^2 = x^3 + <span id="a">2</span>x + 6 in Z <sub id="base">17</sub></p>
+<p>
+	<span>x1 = </span><input id="x1" type="number"> <span>y1 = </span><input id="y1" type="number">
+</p>
+
+<p>
+	<span>x2 = </span><input id="x2" type="number"> <span>y2 = </span><input id="y2" type="number">
+</p>
+
+
+<p>
+	<button id="submit">Add</button>
+</p>
+
+<br/><br/><br/>
+<p>
+	<div>Result:</div>
+	<p>(x , y) = (<span id="x"></span> , <span id="y"></span>)</p>
+</p>
+<script src="fraction.js"></script>
+<script>
+	var base = +document.getElementById("base").innerHTML;
+
+	document.getElementById("submit").onclick = add;
+
+	function add(){
+		x1 = +document.getElementById("x1").value;
+		y1 = +document.getElementById("y1").value;
+		x2 = +document.getElementById("x2").value;
+		y2 = +document.getElementById("y2").value;
+		a = +document.getElementById("a").innerHTML;
+
+		x = 0;
+		y = 0;
+		
+		//ignoring  case 1
+
+		//case 2
+		if(x1 == x2 && y1 == -y2){
+			x = Infinity;
+			y = Infinity;
+		}
+
+		//case 3
+		if(y1 != -y2){
+			var eps = new Fraction((y2-y1) / (x2-x1));
+			eps = modFraction(eps, base);
+
+			x = eps * eps - x1 - x2;
+			y = -y1 + eps * (x1 - x);
+		}
+
+		//case 4
+		if(x1 == x2 && y1 == y2){
+			var eps = new Fraction((3 * x1*x1 + a) / (2 * y1));
+			eps = modFraction(eps, base);
+			
+			x = eps * eps - 2 * x1;
+			y = -y1 + eps * (x1 - x);
+		}
+
+		if(x == Infinity){
+			x = "INFINITY" 
+		} else {
+			while(x < 0){ x += base; } 
+			x = x % base;
+		}
+		if(y == Infinity){
+			y = "INFINITY" 
+		} else {
+			while(y < 0){ y += base; } 
+			y = y % base;
+		}
+		document.getElementById("x").innerHTML = x;
+		document.getElementById("y").innerHTML = y;
+		
+	}
+
+	// Function to find modulo inverse of a
+	function modInverse(a, m){
+	    a = a % m;
+    	for (var x = 1; x < m; x++){
+       		if ((a*x) % m == 1){
+          		return x;
+      		}
+  		}
+	}	
+
+	function modFraction(f,m){
+		n = f.n;
+		d = f.d;
+		result = n * modInverse(d,m);
+		result = result * f.s;
+		while(result < 0){
+			result += m;
+		}
+		return result;
+	}
+	 
+</script>
+</body>
+</html>
