@@ -5,7 +5,9 @@
 </head>
 <body>
 <a style="position: absolute; right:20px;" href="index.html">Back</a>
-<p style="font-size:20px; font-weight: 600;">y^2 = x^3 + <span id="a">2</span>x + 6 in Z <sub id="base">17</sub></p>
+<h2>Add two points</h2>
+<h3>y<sup>2</sup> = x<sup>3</sup> + <span id="a">2</span>x + 6 in &#8484; <sub id="base">17</sub></h3>
+<hr/>
 <p>
 	<span>x1 = </span><input id="x1" type="number"> <span>y1 = </span><input id="y1" type="number">
 </p>
@@ -49,10 +51,9 @@
 		}
 
 		//case 3
-		if(y1 != -y2){
+		if(y1 != -y2 && x1 != x2){
 			var eps = new Fraction((y2-y1) / (x2-x1));
 			eps = modFraction(eps, base);
-
 			x = eps * eps - x1 - x2;
 			y = -y1 + eps * (x1 - x);
 		}
@@ -61,7 +62,6 @@
 		if(x1 == x2 && y1 == y2){
 			var eps = new Fraction((3 * x1*x1 + a) / (2 * y1));
 			eps = modFraction(eps, base);
-			
 			x = eps * eps - 2 * x1;
 			y = -y1 + eps * (x1 - x);
 		}
@@ -101,7 +101,7 @@
 		while(result < 0){
 			result += m;
 		}
-		return result;
+		return result % m;
 	}
 	 
 </script>

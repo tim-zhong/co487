@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<a style="position: absolute; right:20px;" href="index.html">Back</a>
+<h2>Find inverse</h2>
+<h3>y<sup>2</sup> = x<sup>3</sup> + <span id="a">2</span>x + 6 in &#8484; <sub id="base">17</sub></h3>
+<hr/>
+<span>x = </span><input type="number" style="width:50px; margin-right:20px;" id="x"><button id="submit">Go</button>
+<p>x<sup>-1</sup> = <span id="result"></span></p>
+<p><span id="e"></span></p>
+<script>
+var base = +document.getElementById("base").innerHTML;
+
+	document.getElementById("submit").onclick = compute;
+
+	function compute(){
+		var x = +document.getElementById("x").value;
+		var i = modInverse(x, base);
+		document.getElementById("result").innerHTML = i;
+		while(x < 0){
+			x += base;
+		}
+		document.getElementById("e").innerHTML = "because " + x + " * " + i + " = " + x*i + " = " + (x*i)%base + " mod " + base;
+	}
+
+	// Function to find modulo inverse of a
+	function modInverse(a, m){
+		a = +a;
+		m = +m;
+		while(a < 0){
+			console.log(a);
+			a = a + m;
+		}
+	    a = a % m;
+    	for (var x = 1; x < m; x++){
+       		if ((a*x) % m == 1){
+          		return x;
+      		}
+  		}
+	}	
+
+	function modFraction(f,m){
+		n = f.n;
+		d = f.d;
+		result = n * modInverse(d,m);
+		result = result * f.s;
+		while(result < 0){
+			result += m;
+		}
+		return result;
+	}
+</script>
+</body>
+</html>

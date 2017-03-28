@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<a style="position: absolute; right:20px;" href="index.html">Back</a>
+<h2>Add two points</h2>
+<h3>y<sup>2</sup> = x<sup>3</sup> + <span id="a">2</span>x + 6 in &#8484; <sub id="base">17</sub></h3>
+<hr/>
+<p>
+	P : <span>x = </span><input id="x" type="number"> <span>y = </span><input id="y" type="number">
+</p>
+<p>
+	n = <input id="n" style="width:50px;" type="number">
+</p>
+<p>
+	<input type="checkbox" id="sp" checked>show process
+</p>
+
+<p>
+	<button id="submit">Calculate</button>
+</p>
+
+<br/><br/><br/>
+<p>
+	<div>Result:</div>
+	<div id="result"></div>
+</p>
+<script src="fraction.js"></script>
+<script>
+	var base = +document.getElementById("base").innerHTML;
+	var a = +document.getElementById("a").innerHTML;
+	document.getElementById("submit").onclick = multiply;
+
+	function multiply() {
+		var sp = document.getElementById("sp").checked;
+		var x1 = +document.getElementById("x").value;
+		var y1 = +document.getElementById("y").value;
+		var n = +document.getElementById("n").value;
+		
+		var x = x1;
+		var y = y1;
+
+		if(n == 0){
+			x = 0;
+			y = 0;
+		}
+
+		var base = document.getElementById("result").innerHTML = "<br/>"+"P = (" +(isNaN(x) ? "Infinity": x)+ " , " +(isNaN(y) ? "Infinity": y)+ ")";
+		for(var i = 1; i < n; i++){
+			var result = add(x,y,x1,y1);
+			x = result.x;
+			y = result.y;
+			if(sp || i == n-1){
+				var base = document.getElementById("result").innerHTML += "<br/>"+(i+1)+"P = (" +(isNaN(x) ? "Infinity": x)+ " , " +(isNaN(y)? "Infinity": y)+ ")";
+			}
+		}
+	}
+
+
+	function add(x1,y1,x2,y2){
+		x = 0;
+		y = 0;
+		
+		//ignoring  case 1
+		if(x1 == Infinity || x2 == Infinity || y1 == Infinity || y2 == Infinity){
+			return [Infinity, Infinity];
+		}
+
+		//case 2
+		if(x1 == x2 && y1 == -y2){
+			x = Infinity;
+			y = Infinity;
+		}
+
+		//case 3
+		if(y1 != -y2 && y1 != y2){
+			var eps = new Fraction((y2-y1) / (x2-x1));
+			eps = modFraction(eps, base);
+			
+			x = eps * eps - x1 - x2;
+			y = -y1 + eps * (x1 - x);
+		}
+
+		//case 4
+		else if(x1 == x2 && y1 == y2){
+			var eps = new Fraction((3 * x1*x1 + a) / (2 * y1));
+			eps = modFraction(eps, base);
+			
+			x = eps * eps - 2 * x1;
+			y = -y1 + eps * (x1 - x);
+		}
+
+		if(x != Infinity && Number.isInteger(x)){
+			while(x < 0){
+				x = parseInt(x) + parseInt(base);
+			}
+			x = x % base;
+		}
+		if(y != Infinity && Number.isInteger(y)){
+			while(y < 0){
+				y = parseInt(y) + parseInt(base);
+			}
+			y = y % base;
+		}
+		return {x:x,y:y};
+	}
+
+	// Function to find modulo inverse of a
+	function modInverse(a, m){
+	    a = a % m;
+    	for (var x = 1; x < m; x++){
+       		if ((a*x) % m == 1){
+          		return x;
+      		}
+  		}
+	}	
+	function modFraction(f,m){
+		n = f.n;
+		d = f.d;
+		result = n * modInverse(d,m);
+		result = result * f.s;
+		while(result < 0){
+			result = parseInt(result) + parseInt(m);
+		}
+		return result % m;
+	}
+</script>
+</body>
+</html>
